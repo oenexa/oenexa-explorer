@@ -5,7 +5,7 @@ const INITIAL_PROPOSALS: Proposal[] = [
   {
     id: 1,
     title: 'Renewable Validator Subsidy',
-    description: 'Allocate 50,000 OEN monthly block reward bonus to validators operating 100% on certified renewable energy.',
+    description: 'Allocate 50,000 OEN monthly block reward bonus to validators and Oenexa Cortex AI Data Centers operating 100% on certified renewable energy.',
     proposer: 'OEN_GREEN_FOUNDATION',
     votesFor: 1250000,
     votesAgainst: 120000,
@@ -16,13 +16,24 @@ const INITIAL_PROPOSALS: Proposal[] = [
   {
     id: 2,
     title: 'Zero-Carbon Emission Gas Rebate',
-    description: 'Provide a 15% gas fee rebate for smart contract transactions interacting with CarbonX carbon offset credits.',
+    description: 'Provide an automated 15% gas fee rebate for smart contract transactions interacting with CarbonX carbon offset credits on-chain.',
     proposer: 'ECO_VALIDATOR_ALLIANCE',
     votesFor: 890000,
     votesAgainst: 45000,
     quorum: 1000000,
     status: 'Active',
     deadline: 1726800000,
+  },
+  {
+    id: 3,
+    title: 'EnergyX P2P Microgrid Settlement Pilot',
+    description: 'Grant 150,000 OEN for municipal solar & battery storage IoT smart meter integration, enabling decentralized peer-to-peer clean power trading.',
+    proposer: 'ENERGYX_COMMUNITY_COOP',
+    votesFor: 620000,
+    votesAgainst: 18000,
+    quorum: 1000000,
+    status: 'Active',
+    deadline: 1727200000,
   },
 ]
 
@@ -50,7 +61,26 @@ export const GreenDaoTab: React.FC = () => {
       <div className="tab-header">
         <div>
           <h2 className="tab-title">GreenDAO Environmental Governance</h2>
-          <p className="tab-subtitle">Decentralized quadratic governance voting on climate impact proposals</p>
+          <p className="tab-subtitle">Decentralized quadratic governance voting on renewable energy & climate impact</p>
+        </div>
+        <span className="badge success">Quadratic Voting: Power = √OEN</span>
+      </div>
+
+      <div className="metrics-grid mb-4">
+        <div className="metric-card">
+          <span className="metric-label">Treasury Reserve</span>
+          <span className="metric-value highlight">10,000,000 OEN</span>
+          <span className="metric-foot">Dedicated to zero-emission infrastructure</span>
+        </div>
+        <div className="metric-card">
+          <span className="metric-label">Voting Quorum</span>
+          <span className="metric-value">20.0%</span>
+          <span className="metric-foot">60% supermajority required to pass</span>
+        </div>
+        <div className="metric-card">
+          <span className="metric-label">Active Proposals</span>
+          <span className="metric-value">3</span>
+          <span className="metric-foot">Milestone-based tranche execution</span>
         </div>
       </div>
 
