@@ -26,7 +26,58 @@ In accordance with Generation-6 blockchain design standards, the frontend is str
 - **Block Explorer**: Real-time block inspection, transactions, state roots, and validator proposal details.
 - **Post-Quantum Wallet**: NIST ML-DSA-65 address inspection, balances, and transfer broadcasting.
 - **Shielded Privacy Pool**: Private note management, viewing key export, and turnstile supply audits.
-- **DeFi & Ecosystem Tabs**: OenSwap AMM pools, GreenDAO governance proposals, and CarbonX ESG credits.
+- **OenexaSwap DEX**: Native AMM constant-product liquidity pools with 0.3% LP incentives.
+- **GreenDAO Governance**: Quadratic voting, 10M OEN treasury allocations, and climate validator subsidies.
+- **CarbonX ESG Credits**: Verified carbon offset registry with retirement proofs.
+- **Oenexa Cortex**: Green Data Center AI Grid, CaaS GPU compute leasing, and tokenized Tier-4 infrastructure bonds.
+- **D-Commerce**: Zero-commission physical delivery escrow & merchant POS with 2FA cryptographic QR verification.
+- **RPC Console**: Interactive JSON-RPC 2.0 debugging terminal for developers.
+
+---
+
+## Directory Structure & File Naming Conventions
+
+This project strictly adheres to modern React 18 and TypeScript naming standards (distinct from the Go backend naming rules in `oenexa-node`):
+
+```
+oenexa-frontend/
+├── Dockerfile                  # Multi-stage container build (Node -> Nginx Alpine)
+├── package.json                # Dependencies, scripts, and package metadata
+├── tsconfig.json               # TypeScript compiler configuration
+├── vite.config.ts              # Vite bundler and test runner configuration
+├── src/
+│   ├── main.tsx                # Application bootstrap entrypoint
+│   ├── App.tsx                 # Root layout & state provider
+│   ├── App.css                 # Global modern theme styling (Dark/Light mode)
+│   ├── components/             # React UI components (PascalCase.tsx)
+│   │   ├── Header.tsx          # Network status, RPC selector, theme toggle
+│   │   ├── Tabs.tsx            # Main navigation switcher
+│   │   ├── DashboardTab.tsx    # Node metrics & real-time telemetry
+│   │   ├── ExplorerTab.tsx     # Block & transaction inspector
+│   │   ├── WalletTab.tsx       # Post-quantum key generation & transfer
+│   │   ├── ShieldedTab.tsx     # Dual-pool privacy note manager
+│   │   ├── DexTab.tsx          # OenexaSwap AMM liquidity pool
+│   │   ├── GreenDaoTab.tsx     # Climate governance & quadratic voting
+│   │   ├── CarbonXTab.tsx      # ESG carbon offset tokenization
+│   │   ├── CortexTab.tsx       # Green AI compute grid & CaaS leasing
+│   │   ├── DCommerceTab.tsx    # Zero-commission physical delivery escrow
+│   │   └── RpcConsoleTab.tsx   # JSON-RPC terminal & live testbed
+│   ├── services/               # API & RPC client services (camelCase.ts)
+│   │   └── rpcClient.ts        # Typed JSON-RPC 2.0 client
+│   ├── types/                  # TypeScript interface definitions (camelCase.ts)
+│   │   └── rpc.ts              # Blockchain & RPC data structures
+│   └── test/                   # Automated Vitest test suite (*.test.tsx / *.test.ts)
+│       ├── setup.ts            # Testing library matchers setup
+│       ├── components.test.tsx # Component rendering & user interaction tests
+│       └── rpcClient.test.ts   # RPC client network & serialization tests
+```
+
+### Conventions Summary
+- **React Components**: `PascalCase.tsx` (e.g., `Header.tsx`, `CortexTab.tsx`).
+- **Services & Modules**: `camelCase.ts` (e.g., `rpcClient.ts`).
+- **Type Definitions**: `camelCase.ts` (e.g., `rpc.ts`).
+- **Tests**: `*.test.tsx` or `*.test.ts` placed under `src/test/`.
+- **CSS / Styles**: `kebab-case` for CSS class names with CSS variables for dynamic theming.
 
 ---
 

@@ -7,6 +7,8 @@ import { WalletTab } from './components/WalletTab'
 import { DexTab } from './components/DexTab'
 import { GreenDaoTab } from './components/GreenDaoTab'
 import { CarbonXTab } from './components/CarbonXTab'
+import { CortexTab } from './components/CortexTab'
+import { DCommerceTab } from './components/DCommerceTab'
 import { ShieldedTab } from './components/ShieldedTab'
 import { RpcConsoleTab } from './components/RpcConsoleTab'
 import { OENClient } from './services/rpcClient'
@@ -79,6 +81,8 @@ export const App: React.FC = () => {
           {activeTab === 'dex' && <DexTab />}
           {activeTab === 'greendao' && <GreenDaoTab />}
           {activeTab === 'carbonx' && <CarbonXTab />}
+          {activeTab === 'cortex' && <CortexTab />}
+          {activeTab === 'dcommerce' && <DCommerceTab />}
           {activeTab === 'rpc-console' && <RpcConsoleTab client={client} />}
         </main>
       </div>

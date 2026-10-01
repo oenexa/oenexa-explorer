@@ -8,6 +8,8 @@ export type TabKey =
   | 'dex'
   | 'greendao'
   | 'carbonx'
+  | 'cortex'
+  | 'dcommerce'
   | 'rpc-console'
 
 export interface TabsProps {
@@ -29,6 +31,8 @@ const TABS: TabDefinition[] = [
   { key: 'dex', label: 'OenexaSwap', icon: '🔄' },
   { key: 'greendao', label: 'GreenDAO', icon: '🌱' },
   { key: 'carbonx', label: 'CarbonX', icon: '🌍' },
+  { key: 'cortex', label: 'Oenexa Cortex', icon: '🧠' },
+  { key: 'dcommerce', label: 'D-Commerce', icon: '📦' },
   { key: 'rpc-console', label: 'RPC Console', icon: '⚡' },
 ]
 
