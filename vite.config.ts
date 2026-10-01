@@ -6,7 +6,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: path.resolve(__dirname, '../internal/web/static'),
+    outDir: process.env.OUT_DIR ? path.resolve(__dirname, process.env.OUT_DIR) : 'dist',
     emptyOutDir: true,
   },
   test: {
