@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import type { OENClient } from '../services/rpcClient'
 import type { ChainInfo } from '../types/rpc'
 
+import { LiveTerminal } from './LiveTerminal'
+
 export interface DashboardTabProps {
   client: OENClient
 }
@@ -110,23 +112,29 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ client }) => {
               </div>
             </div>
 
-            <div className="card mt-4">
-              <h3 className="card-title">Consensus State & Best Tip</h3>
-              <div className="info-row">
-                <span className="info-key">Tip Block Hash:</span>
-                <code className="info-val break-all">{tipHash}</code>
+            <div className="dashboard-lower-split">
+              <div className="card consensus-panel">
+                <h3 className="card-title">Consensus State & Best Tip</h3>
+                <div className="info-row">
+                  <span className="info-key">Tip Block Hash:</span>
+                  <code className="info-val break-all">{tipHash}</code>
+                </div>
+                <div className="info-row">
+                  <span className="info-key">Block Gas Limit:</span>
+                  <span className="info-val">{gasLimit.toLocaleString()} gas</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-key">Signature Scheme:</span>
+                  <span className="info-val text-green">ML-DSA-65 (NIST FIPS 204 Standard)</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-key">Key Encapsulation:</span>
+                  <span className="info-val text-cyan">ML-KEM-768 (NIST FIPS 203 Standard)</span>
+                </div>
               </div>
-              <div className="info-row">
-                <span className="info-key">Block Gas Limit:</span>
-                <span className="info-val">{gasLimit.toLocaleString()} gas</span>
-              </div>
-              <div className="info-row">
-                <span className="info-key">Signature Scheme:</span>
-                <span className="info-val text-green">ML-DSA-65 (NIST FIPS 204 Standard)</span>
-              </div>
-              <div className="info-row">
-                <span className="info-key">Key Encapsulation:</span>
-                <span className="info-val text-cyan">ML-KEM-768 (NIST FIPS 203 Standard)</span>
+
+              <div className="terminal-panel">
+                <LiveTerminal />
               </div>
             </div>
           </>

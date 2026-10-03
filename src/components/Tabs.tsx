@@ -28,7 +28,7 @@ const TABS: TabDefinition[] = [
 
 export const Tabs: React.FC<TabsProps> = ({ activeTab, onSelectTab }) => {
   return (
-    <nav className="tabs-nav" role="tablist" aria-label="Main Navigation">
+    <nav className="tabs-container" role="tablist" aria-label="Main Navigation">
       {TABS.map((tab) => {
         const isActive = activeTab === tab.key
         return (

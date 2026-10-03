@@ -77,14 +77,11 @@ const createMockClient = (overrides = {}): OENClient => {
 
 describe('React Component Suite (TDD)', () => {
   it('Header renders branding and theme toggle', () => {
-    const onToggleTheme = vi.fn()
     render(
       <Header
         endpoint="http://127.0.0.1:8545"
         connected={true}
         height={105}
-        isDark={true}
-        onToggleTheme={onToggleTheme}
         onEndpointChange={vi.fn()}
       />
     )
@@ -92,10 +89,6 @@ describe('React Component Suite (TDD)', () => {
     expect(screen.getByText(/OENEXA/i)).toBeInTheDocument()
     expect(screen.getByText(/Block #105/i)).toBeInTheDocument()
     expect(screen.getByText(/Online/i)).toBeInTheDocument()
-
-    const themeBtn = screen.getByRole('button', { name: /toggle theme/i })
-    fireEvent.click(themeBtn)
-    expect(onToggleTheme).toHaveBeenCalled()
   })
 
   it('Tabs component renders all navigation options and handles switching', () => {

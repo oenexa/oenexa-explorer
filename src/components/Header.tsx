@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
+import { SpinningCoin } from './SpinningCoin'
 
 export interface HeaderProps {
   endpoint: string
   connected: boolean
   height: number
-  isDark: boolean
-  onToggleTheme: () => void
   onEndpointChange: (url: string) => void
 }
 
@@ -13,8 +12,6 @@ export const Header: React.FC<HeaderProps> = ({
   endpoint,
   connected,
   height,
-  isDark,
-  onToggleTheme,
   onEndpointChange,
 }) => {
   const [editingUrl, setEditingUrl] = useState(false)
@@ -28,9 +25,9 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header-container">
       <div className="brand-section">
-        <div className="brand-logo">⚛</div>
+        <SpinningCoin />
         <div>
-          <h1 className="brand-title">OENEXA (OEN) / OENEXA</h1>
+          <h1 className="brand-title">OENEXA (OEN)</h1>
           <span className="brand-badge">NIST ML-DSA-65 • Dual-Pool Mainnet</span>
         </div>
       </div>
@@ -71,14 +68,6 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
 
-        <button
-          onClick={onToggleTheme}
-          className="theme-toggle-btn"
-          aria-label="Toggle theme"
-          title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
-        >
-          {isDark ? '☀️' : '🌙'}
-        </button>
       </div>
     </header>
   )

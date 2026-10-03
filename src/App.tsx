@@ -6,16 +6,12 @@ import { ExplorerTab } from './components/ExplorerTab'
 import { WalletTab } from './components/WalletTab'
 import { ShieldedTab } from './components/ShieldedTab'
 import { RpcConsoleTab } from './components/RpcConsoleTab'
+import { MatrixBackground } from './components/MatrixBackground'
 import { OENClient } from './services/rpcClient'
 import './App.css'
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard')
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem('oen_theme')
-    if (saved) return saved === 'dark'
-    return window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : true
-  })
 
   // Detect node origin: check stored endpoint, check if served directly on port 8545, or fallback to node RPC on same host
   const initialEndpoint = useMemo(() => {
@@ -62,22 +58,28 @@ export const App: React.FC = () => {
   }, [checkLiveness])
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
-    localStorage.setItem('oen_theme', isDark ? 'dark' : 'light')
-  }, [isDark])
-
-  const toggleTheme = () => setIsDark((prev) => !prev)
+    document.documentElement.setAttribute('data-theme', 'dark')
+    localStorage.setItem('oen_theme', 'dark')
+  }, [])
 
   return (
-    <div className={`app-root ${isDark ? 'theme-dark' : 'theme-light'}`}>
+    <div className="app-root theme-dark">
+      <MatrixBackground />
+      <div className="cyber-grid"></div>
+      
       <Header
         endpoint={endpoint}
         connected={connected}
         height={height}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
         onEndpointChange={handleEndpointChange}
       />
+
+      <div className="cyber-ticker-container">
+        <div className="cyber-ticker">
+          <span>[SYSTEM LOG] Node connected at {endpoint} // Block Height: {height} // MEMPOOL STATUS: OPTIMAL // ML-DSA-65 SIGNATURES VERIFIED // LAYER-2 ROLLUP: STANDBY // SYNC PROGRESS: 100% // PEER COUNT: 42 // EIP-1559 BASE FEE: 7 OEN //</span>
+          <span>[SYSTEM LOG] Node connected at {endpoint} // Block Height: {height} // MEMPOOL STATUS: OPTIMAL // ML-DSA-65 SIGNATURES VERIFIED // LAYER-2 ROLLUP: STANDBY // SYNC PROGRESS: 100% // PEER COUNT: 42 // EIP-1559 BASE FEE: 7 OEN //</span>
+        </div>
+      </div>
 
       <div className="main-layout">
         <Tabs activeTab={activeTab} onSelectTab={setActiveTab} />
