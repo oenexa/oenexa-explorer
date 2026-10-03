@@ -5,11 +5,6 @@ export type TabKey =
   | 'explorer'
   | 'wallet'
   | 'shielded'
-  | 'dex'
-  | 'greendao'
-  | 'carbonx'
-  | 'cortex'
-  | 'dcommerce'
   | 'rpc-console'
 
 export interface TabsProps {
@@ -28,11 +23,6 @@ const TABS: TabDefinition[] = [
   { key: 'explorer', label: 'Explorer', icon: '🔍' },
   { key: 'wallet', label: 'Quantum Wallet', icon: '🔑' },
   { key: 'shielded', label: 'Shielded Privacy', icon: '🛡️' },
-  { key: 'dex', label: 'OenexaSwap', icon: '🔄' },
-  { key: 'greendao', label: 'GreenDAO', icon: '🌱' },
-  { key: 'carbonx', label: 'CarbonX', icon: '🌍' },
-  { key: 'cortex', label: 'Oenexa Cortex', icon: '🧠' },
-  { key: 'dcommerce', label: 'D-Commerce', icon: '📦' },
   { key: 'rpc-console', label: 'RPC Console', icon: '⚡' },
 ]
 

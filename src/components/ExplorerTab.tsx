@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import type { OENClient } from '../services/rpcClient'
 import type { BlockInfo } from '../types/rpc'
 
@@ -9,12 +9,34 @@ export interface ExplorerTabProps {
 export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
   const [query, setQuery] = useState('')
   const [block, setBlock] = useState<BlockInfo | null>(null)
+  const [recentBlocks, setRecentBlocks] = useState<BlockInfo[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingRecent, setLoadingRecent] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const fetchRecent = useCallback(async () => {
+    setLoadingRecent(true)
+    try {
+      const blocks = await client.getRecentBlocks(8)
+      if (Array.isArray(blocks) && blocks.length > 0) {
+        setRecentBlocks(blocks)
+      }
+    } catch {
+      // Ignore background refresh errors
+    } finally {
+      setLoadingRecent(false)
+    }
+  }, [client])
+
+  useEffect(() => {
+    fetchRecent()
+    const interval = setInterval(fetchRecent, 6000)
+    return () => clearInterval(interval)
+  }, [fetchRecent])
+
+  const handleSearch = async (e?: React.FormEvent, customQuery?: string) => {
     if (e) e.preventDefault()
-    const trimmed = query.trim()
+    const trimmed = (customQuery ?? query).trim()
     if (!trimmed) return
 
     setLoading(true)
@@ -37,16 +59,22 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
     }
   }
 
+  const formatTimestamp = (ts: number) => {
+    if (!ts) return 'Genesis'
+    const ms = ts > 1e12 ? Math.floor(ts / 1e6) : ts * 1000
+    return new Date(ms).toUTCString()
+  }
+
   return (
     <section className="tab-pane">
       <div className="tab-header">
         <div>
           <h2 className="tab-title">Block & Transaction Explorer</h2>
-          <p className="tab-subtitle">Inspect blocks, post-quantum transactions, and state roots</p>
+          <p className="tab-subtitle">Inspect real-time blocks, post-quantum transactions, and state roots</p>
         </div>
       </div>
 
-      <form onSubmit={handleSearch} className="search-bar-form">
+      <form onSubmit={(e) => handleSearch(e)} className="search-bar-form">
         <input
           type="text"
           value={query}
@@ -82,7 +110,9 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
         <div className="card mt-4">
           <div className="card-header-flex">
             <h3 className="card-title">Block #{block.height} Details</h3>
-            <span className="badge success">{block.txCount} Transactions</span>
+            <span className="badge success">
+              {block.txCount ?? block.tx_count ?? (block.transactions ? block.transactions.length : 0)} Transactions
+            </span>
           </div>
 
           <div className="detail-table">
@@ -92,23 +122,23 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
             </div>
             <div className="detail-row">
               <span className="detail-key">Parent Hash</span>
-              <code className="detail-val break-all">{block.parentHash}</code>
+              <code className="detail-val break-all">{block.parentHash || block.prev_hash || 'Genesis (0x0)'}</code>
             </div>
             <div className="detail-row">
               <span className="detail-key">Proposer (Validator)</span>
-              <code className="detail-val text-green break-all">{block.proposer}</code>
+              <code className="detail-val text-green break-all">{block.proposer || block.validator_addr || 'OEN Validator'}</code>
             </div>
             <div className="detail-row">
               <span className="detail-key">Timestamp</span>
-              <span className="detail-val">{new Date(block.timestamp * 1000).toUTCString()}</span>
+              <span className="detail-val">{formatTimestamp(block.timestamp)}</span>
             </div>
             <div className="detail-row">
               <span className="detail-key">Gas Used</span>
-              <span className="detail-val">{block.gasUsed.toLocaleString()} gas</span>
+              <span className="detail-val">{(block.gasUsed ?? block.gas_used ?? 0).toLocaleString()} gas</span>
             </div>
             <div className="detail-row">
               <span className="detail-key">Base Fee</span>
-              <span className="detail-val">{(block.baseFee / 1000000).toFixed(4)} nanoOEN</span>
+              <span className="detail-val">{block.baseFee ?? block.base_fee ?? 10} nanoOEN</span>
             </div>
           </div>
 
@@ -135,20 +165,78 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
                       <td><code className="addr-badge">{tx.from.slice(0, 10)}...</code></td>
                       <td><code className="addr-badge">{tx.to ? `${tx.to.slice(0, 10)}...` : 'Contract Deploy'}</code></td>
                       <td className="text-right">
-                        {(Number(BigInt(tx.value || '0')) / 1e18).toFixed(4)}
+                        {(Number(BigInt(tx.value || '0')) / 1e9).toFixed(4)}
                       </td>
                       <td>{tx.nonce}</td>
-                      <td>{tx.gasLimit.toLocaleString()}</td>
+                      <td>{(tx.gasLimit || 0).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="empty-text">No transactions included in this block.</p>
+            <p className="empty-text">No transactions included in this block (BFT heartbeat).</p>
           )}
         </div>
       )}
+
+      {/* Live Recent Blocks Feed */}
+      <div className="card mt-4">
+        <div className="card-header-flex">
+          <h3 className="card-title">Live Recent Blocks</h3>
+          <button
+            onClick={fetchRecent}
+            className="btn-sm secondary"
+            disabled={loadingRecent}
+            aria-label="Refresh recent blocks"
+          >
+            {loadingRecent ? 'Refreshing...' : '🔄 Refresh Feed'}
+          </button>
+        </div>
+
+        {recentBlocks.length > 0 ? (
+          <div className="table-responsive">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Height</th>
+                  <th>Hash</th>
+                  <th>Proposer</th>
+                  <th>Tx Count</th>
+                  <th>Gas Used</th>
+                  <th>Base Fee</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentBlocks.map((b) => (
+                  <tr key={b.height}>
+                    <td><strong className="text-cyan">#{b.height}</strong></td>
+                    <td><code className="tx-hash-badge">{b.hash ? b.hash.slice(0, 14) + '...' : '-'}</code></td>
+                    <td><code className="addr-badge">{b.validator_addr ? b.validator_addr.slice(0, 12) + '...' : 'Validator'}</code></td>
+                    <td><span className="badge secondary">{b.tx_count ?? b.txCount ?? 0} txs</span></td>
+                    <td>{(b.gas_used ?? b.gasUsed ?? 0).toLocaleString()}</td>
+                    <td>{b.base_fee ?? b.baseFee ?? 10} nanoOEN</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          setBlock(b)
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
+                        }}
+                        className="btn-sm primary"
+                      >
+                        Inspect
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="empty-text">Loading live blocks from consensus engine...</p>
+        )}
+      </div>
     </section>
   )
 }

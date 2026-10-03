@@ -16,13 +16,16 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
   const [amount, setAmount] = useState('')
   const [txResult, setTxResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [loadingValidator, setLoadingValidator] = useState(false)
 
   const handleGenerateKeypair = () => {
-    // Generate simulated NIST ML-DSA-65 address and keypair for client-side demo
-    const hex = Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase()
-    const derivedAddr = `OEN${hex}`
-    const fakePk = `04${Array.from({ length: 120 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}... [1952 bytes ML-DSA-65]`
-    const fakeSk = `sk_${Array.from({ length: 120 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}... [4032 bytes ML-DSA-65]`
+    // Generate simulated NIST FIPS 204 ML-DSA-65 address and keypair for client-side demo
+    // OENEXA native addresses are 32 bytes (64 hex characters) SHA-3-256 derived from ML-DSA-65 public key
+    const hex = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('').toLowerCase()
+    const derivedAddr = `0x${hex}`
+    const fakePk = `04${Array.from({ length: 120 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}... [1952 bytes ML-DSA-65 Public Key]`
+    const fakeSk = `sk_${Array.from({ length: 120 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}... [4032 bytes ML-DSA-65 Private Key]`
 
     setAddress(derivedAddr)
     setPublicKey(fakePk)
@@ -33,19 +36,73 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
     setTxResult(null)
   }
 
+  const handleCopy = (text: string) => {
+    if (!text) return
+    navigator.clipboard?.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleLoadValidator = async () => {
+    setLoadingValidator(true)
+    setError(null)
+    try {
+      const info = await client.getChainInfo()
+      let valAddr = ''
+      if (info.validator_addr) {
+        valAddr = info.validator_addr
+      } else if (Array.isArray((info as any).validators) && (info as any).validators.length > 0) {
+        valAddr = (info as any).validators[0]
+      } else {
+        // Query block 1 to get proposer
+        const b = await client.getBlockByHeight(1).catch(() => null)
+        if (b && (b.proposer || b.validator_addr)) {
+          valAddr = b.proposer || b.validator_addr || ''
+        }
+      }
+
+      if (valAddr) {
+        setAddress(valAddr)
+        setPublicKey('ML-DSA-65 Active Consensus Validator Key [NIST FIPS 204]')
+        setSecretKey('Protected in Validator Hardware Enclave / HSM')
+        // Automatically check balance
+        const balRaw = await client.getBalance(valAddr)
+        const nanoOen = BigInt(balRaw || '0')
+        const oenVal = Number(nanoOen) / 1e9
+        setBalance(`${oenVal.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} OEN`)
+        const n = await client.getTransactionCount(valAddr)
+        setNonce(n)
+      } else {
+        setError('No active validator address returned from consensus engine')
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to load validator address')
+    } finally {
+      setLoadingValidator(false)
+    }
+  }
+
   const handleCheckBalance = async () => {
     const trimmed = address.trim()
     if (!trimmed) {
-      setError('Please enter or generate a OEN address')
+      setError('Please enter or generate an OEN address')
       return
     }
 
     setChecking(true)
     setError(null)
     try {
-      const bal = await client.getBalance(trimmed)
-      const balOen = (Number(BigInt(bal || '0')) / 1e18).toFixed(4)
-      setBalance(`${balOen} OEN`)
+      const balRaw = await client.getBalance(trimmed)
+      const valStr = String(balRaw || '0')
+      let oenVal: number
+      if (valStr.length > 17) {
+        // 18 decimals EVM format
+        oenVal = Number(BigInt(valStr) / 100000000000000n) / 10000
+      } else {
+        // 9 decimals native nano-OEN format
+        oenVal = Number(BigInt(valStr)) / 1e9
+      }
+      setBalance(`${oenVal.toFixed(4)} OEN`)
 
       const n = await client.getTransactionCount(trimmed)
       setNonce(n)
@@ -65,7 +122,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
 
     try {
       setError(null)
-      // Simulate raw tx encoding or send
+      // Generate a 32-byte hash formatted transaction representation
       const dummyRawHex = '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
       const txHash = await client.sendRawTransaction(dummyRawHex)
       setTxResult(txHash)
@@ -81,51 +138,82 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
           <h2 className="tab-title">Quantum ML-DSA-65 Wallet</h2>
           <p className="tab-subtitle">Post-quantum keypair generation, address inspection, and transfers</p>
         </div>
-        <button
-          onClick={handleGenerateKeypair}
-          className="btn primary"
-          aria-label="Generate post-quantum keypair"
-        >
-          🔑 Generate Post-Quantum Keypair
-        </button>
+        <div className="btn-group">
+          <button
+            onClick={handleGenerateKeypair}
+            className="btn primary"
+            aria-label="Generate post-quantum keypair"
+          >
+            🔑 Generate Post-Quantum Keypair
+          </button>
+          <button
+            onClick={handleLoadValidator}
+            className="btn secondary"
+            disabled={loadingValidator}
+            aria-label="Load Genesis Validator"
+          >
+            {loadingValidator ? 'Loading...' : '⚡ Load Genesis Validator'}
+          </button>
+        </div>
       </div>
 
-      {address && (
-        <div className="card mt-4">
-          <h3 className="card-title">Generated Post-Quantum Address</h3>
-          <div className="info-row">
-            <span className="info-key">Wallet Address:</span>
-            <code className="info-val text-green break-all">{address}</code>
+      <div className="card mt-4">
+        <h3 className="card-title">Generated Post-Quantum Address</h3>
+        <div className="form-group mb-3">
+          <label htmlFor="wallet-address-input">OEN Address (32-byte 0x... or 20-byte legacy)</label>
+          <div className="input-with-badge">
+            <input
+              id="wallet-address-input"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="0x... (e.g. 0x0123...)"
+              className="form-input font-mono"
+            />
+            {address && (
+              <button
+                type="button"
+                onClick={() => handleCopy(address)}
+                className="btn-sm secondary"
+              >
+                {copied ? '✓ Copied' : '📋 Copy'}
+              </button>
+            )}
           </div>
+        </div>
+
+        {publicKey && (
           <div className="info-row">
             <span className="info-key">Public Key:</span>
             <code className="info-val break-all">{publicKey}</code>
           </div>
+        )}
+        {secretKey && (
           <div className="info-row">
             <span className="info-key">Private Key:</span>
             <code className="info-val text-muted break-all">{secretKey}</code>
           </div>
+        )}
 
-          <div className="btn-group mt-3">
-            <button
-              onClick={handleCheckBalance}
-              className="btn secondary"
-              disabled={checking}
-              aria-label="Check Balance"
-            >
-              {checking ? 'Checking...' : '💰 Check Balance'}
-            </button>
-          </div>
-
-          {balance !== null && (
-            <div className="balance-badge mt-3">
-              <span>Account Balance: </span>
-              <strong>{balance}</strong>
-              {nonce !== null && <span className="text-muted ml-2"> (Nonce: {nonce})</span>}
-            </div>
-          )}
+        <div className="btn-group mt-3">
+          <button
+            onClick={handleCheckBalance}
+            className="btn secondary"
+            disabled={checking || !address.trim()}
+            aria-label="Check Balance"
+          >
+            {checking ? 'Checking...' : '💰 Check Balance & Nonce'}
+          </button>
         </div>
-      )}
+
+        {balance !== null && (
+          <div className="balance-badge mt-3">
+            <span>Account Balance: </span>
+            <strong className="text-green text-lg">{balance}</strong>
+            {nonce !== null && <span className="text-muted ml-2"> (Confirmed Nonce: {nonce})</span>}
+          </div>
+        )}
+      </div>
 
       <div className="card mt-4">
         <h3 className="card-title">Send Quantum OEN Transaction</h3>
@@ -148,8 +236,8 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
               type="text"
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              placeholder="OEN..."
-              className="form-input"
+              placeholder="0x..."
+              className="form-input font-mono"
             />
           </div>
 

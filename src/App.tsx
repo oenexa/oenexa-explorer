@@ -4,11 +4,6 @@ import { Tabs, TabKey } from './components/Tabs'
 import { DashboardTab } from './components/DashboardTab'
 import { ExplorerTab } from './components/ExplorerTab'
 import { WalletTab } from './components/WalletTab'
-import { DexTab } from './components/DexTab'
-import { GreenDaoTab } from './components/GreenDaoTab'
-import { CarbonXTab } from './components/CarbonXTab'
-import { CortexTab } from './components/CortexTab'
-import { DCommerceTab } from './components/DCommerceTab'
 import { ShieldedTab } from './components/ShieldedTab'
 import { RpcConsoleTab } from './components/RpcConsoleTab'
 import { OENClient } from './services/rpcClient'
@@ -22,16 +17,30 @@ export const App: React.FC = () => {
     return window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : true
   })
 
-  // Detect node origin if embedded or fallback to localhost:8545
+  // Detect node origin: check stored endpoint, check if served directly on port 8545, or fallback to node RPC on same host
   const initialEndpoint = useMemo(() => {
-    if (typeof window !== 'undefined' && window.location.port && window.location.port !== '5173') {
-      return window.location.origin
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('oen_rpc_endpoint')
+      if (saved) return saved
+      if (window.location.port === '8545') {
+        return window.location.origin
+      }
+      const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:'
+      const hostname = window.location.hostname || 'localhost'
+      return `${protocol}//${hostname}:8545`
     }
     return 'http://localhost:8545'
   }, [])
 
   const [endpoint, setEndpoint] = useState<string>(initialEndpoint)
   const client = useMemo(() => new OENClient(endpoint), [endpoint])
+
+  const handleEndpointChange = (url: string) => {
+    setEndpoint(url)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('oen_rpc_endpoint', url)
+    }
+  }
 
   const [connected, setConnected] = useState(false)
   const [height, setHeight] = useState(0)
@@ -67,7 +76,7 @@ export const App: React.FC = () => {
         height={height}
         isDark={isDark}
         onToggleTheme={toggleTheme}
-        onEndpointChange={setEndpoint}
+        onEndpointChange={handleEndpointChange}
       />
 
       <div className="main-layout">
@@ -78,11 +87,6 @@ export const App: React.FC = () => {
           {activeTab === 'explorer' && <ExplorerTab client={client} />}
           {activeTab === 'wallet' && <WalletTab client={client} />}
           {activeTab === 'shielded' && <ShieldedTab client={client} />}
-          {activeTab === 'dex' && <DexTab />}
-          {activeTab === 'greendao' && <GreenDaoTab />}
-          {activeTab === 'carbonx' && <CarbonXTab />}
-          {activeTab === 'cortex' && <CortexTab />}
-          {activeTab === 'dcommerce' && <DCommerceTab />}
           {activeTab === 'rpc-console' && <RpcConsoleTab client={client} />}
         </main>
       </div>

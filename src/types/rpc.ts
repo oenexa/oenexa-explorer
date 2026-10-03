@@ -17,15 +17,26 @@ export interface RPCResponse<T = any> {
 }
 
 export interface ChainInfo {
-  chainId: string
+  chainId?: string | number
+  chain_id?: number
   height: number
-  tipHash: string
-  validators: number
-  round: number
-  mempoolSize: number
-  baseFee: number
-  gasLimit: number
-  gasTargetRatio: number
+  tipHash?: string
+  tip_hash?: string
+  validators?: number
+  validator_addr?: string
+  round?: number
+  mempoolSize?: number
+  mempool_len?: number
+  baseFee?: number
+  base_fee?: number
+  gasLimit?: number
+  gas_limit?: number
+  gasTargetRatio?: number
+  gas_target_ratio?: number
+  peerCount?: number
+  peer_count?: number
+  version?: string
+  ticker?: string
 }
 
 export interface TransactionInfo {
@@ -42,13 +53,20 @@ export interface TransactionInfo {
 export interface BlockInfo {
   height: number
   hash: string
-  parentHash: string
+  parentHash?: string
+  prev_hash?: string
   timestamp: number
-  proposer: string
-  txCount: number
-  transactions: TransactionInfo[]
-  gasUsed: number
-  baseFee: number
+  proposer?: string
+  validator_addr?: string
+  txCount?: number
+  tx_count?: number
+  transactions?: TransactionInfo[]
+  gasUsed?: number
+  gas_used?: number
+  gasLimit?: number
+  gas_limit?: number
+  baseFee?: number
+  base_fee?: number
 }
 
 export interface FeeEstimate {

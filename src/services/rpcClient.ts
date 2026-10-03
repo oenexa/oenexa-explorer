@@ -111,8 +111,18 @@ export class OENClient {
     return this.dispatch<BlockInfo>('oen_blockByHash', [hash])
   }
 
+  async getRecentBlocks(count: number = 10): Promise<BlockInfo[]> {
+    return this.dispatch<BlockInfo[]>('oen_recentBlocks', [count])
+  }
+
   async getBalance(address: string): Promise<string> {
-    return this.dispatch<string>('oen_getBalance', [address])
+    const res = await this.dispatch<any>('oen_getBalance', [address])
+    if (typeof res === 'object' && res !== null) {
+      if (res.balance_nano_oen !== undefined) return String(res.balance_nano_oen)
+      if (res.balance_oenexa !== undefined) return String(res.balance_oenexa)
+      if (res.balance !== undefined) return String(res.balance)
+    }
+    return String(res ?? '0')
   }
 
   async getTransactionCount(address: string): Promise<number> {

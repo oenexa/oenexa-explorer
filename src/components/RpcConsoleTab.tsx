@@ -12,10 +12,13 @@ interface MethodTemplate {
 
 const TEMPLATES: Record<string, MethodTemplate> = {
   chainInfo: { method: 'oen_chainInfo', params: [] },
+  recentBlocks: { method: 'oen_recentBlocks', params: [5] },
   feeEstimate: { method: 'oen_feeEstimate', params: [] },
   gasPrice: { method: 'oen_gasPrice', params: [] },
   blockByHeight: { method: 'oen_blockByHeight', params: [1] },
-  getBalance: { method: 'oen_getBalance', params: ['OEN0000000000000000000000000000000000000000'] },
+  getBalance: { method: 'oen_getBalance', params: ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest'] },
+  shieldedBal: { method: 'oen_getShieldedBalance', params: [] },
+  turnstile: { method: 'oen_getTurnstileStatus', params: [] },
 }
 
 export const RpcConsoleTab: React.FC<RpcConsoleTabProps> = ({ client }) => {
