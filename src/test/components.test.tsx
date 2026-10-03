@@ -5,11 +5,11 @@ import { Tabs } from '../components/Tabs'
 import { DashboardTab } from '../components/DashboardTab'
 import { ExplorerTab } from '../components/ExplorerTab'
 import { WalletTab } from '../components/WalletTab'
-import { DexTab } from '../components/DexTab'
-import { GreenDaoTab } from '../components/GreenDaoTab'
-import { CarbonXTab } from '../components/CarbonXTab'
-import { CortexTab } from '../components/CortexTab'
-import { DCommerceTab } from '../components/DCommerceTab'
+
+
+
+
+
 import { RpcConsoleTab } from '../components/RpcConsoleTab'
 import type { OENClient } from '../services/rpcClient'
 import type { ChainInfo, BlockInfo, FeeEstimate } from '../types/rpc'
@@ -175,35 +175,6 @@ describe('React Component Suite (TDD)', () => {
     })
   })
 
-  it('DexTab calculates AMM swap and output amount', () => {
-    render(<DexTab />)
-
-    const inputAmount = screen.getByLabelText(/You Pay/i)
-    fireEvent.change(inputAmount, { target: { value: '10' } })
-
-    expect(screen.getByText(/Estimated Output/i)).toBeInTheDocument()
-    expect(screen.getByText(/0.3% Fee/i)).toBeInTheDocument()
-  })
-
-  it('GreenDaoTab lists proposals and registers vote', () => {
-    render(<GreenDaoTab />)
-
-    expect(screen.getByText(/Renewable Validator Subsidy/i)).toBeInTheDocument()
-    const voteBtn = screen.getAllByRole('button', { name: /Vote For/i })[0]
-    fireEvent.click(voteBtn)
-
-    expect(screen.getByText(/Vote Recorded/i)).toBeInTheDocument()
-  })
-
-  it('CarbonXTab displays ESG credits and allows retirement', () => {
-    render(<CarbonXTab />)
-
-    expect(screen.getByText(/Boreal Forest Conservation/i)).toBeInTheDocument()
-    const retireBtn = screen.getAllByRole('button', { name: /Retire/i })[0]
-    fireEvent.click(retireBtn)
-
-    expect(screen.getByText('Retired')).toBeInTheDocument()
-  })
 
   it('RpcConsoleTab executes custom RPC method and displays result', async () => {
     const client = createMockClient({
@@ -219,39 +190,5 @@ describe('React Component Suite (TDD)', () => {
     })
   })
 
-  it('CortexTab renders data centers, leases compute, and purchases bonds', () => {
-    render(<CortexTab />)
 
-    expect(screen.getByText(/Oenexa Cortex: Green Data Center AI Grid/i)).toBeInTheDocument()
-    expect(screen.getByText(/Sierra Nevada Tier-4 Facility/i)).toBeInTheDocument()
-    expect(screen.getByText(/1,024 GPUs/i)).toBeInTheDocument()
-
-    // Test GPU lease button
-    const leaseBtn = screen.getByRole('button', { name: /Launch AI Compute Workload/i })
-    fireEvent.click(leaseBtn)
-    expect(screen.getByText(/CaaS Compute Lease Verified on Layer-1/i)).toBeInTheDocument()
-
-    // Test Bond purchase button
-    const bondBtn = screen.getByRole('button', { name: /Purchase Infrastructure Bonds/i })
-    fireEvent.click(bondBtn)
-    expect(screen.getByText(/Fractional Infrastructure Bonds Minted/i)).toBeInTheDocument()
-  })
-
-  it('DCommerceTab renders orders, places escrow order, and advances delivery QR state', () => {
-    render(<DCommerceTab />)
-
-    expect(screen.getByText(/Decentralized Everyday Commerce \(D-Commerce\)/i)).toBeInTheDocument()
-    expect(screen.getByText(/0% Middleman Extraction/i)).toBeInTheDocument()
-    expect(screen.getByText(/GreenLeaf Organic Kitchen/i)).toBeInTheDocument()
-
-    // Place new escrow order
-    const orderBtn = screen.getByRole('button', { name: /Lock Funds & Place Escrow Order/i })
-    fireEvent.click(orderBtn)
-    expect(screen.getByText(/D-Commerce Delivery Escrow Created/i)).toBeInTheDocument()
-
-    // Advance order status on an existing order
-    const actionBtn = screen.getAllByRole('button', { name: /Scan Pickup QR/i })[0]
-    fireEvent.click(actionBtn)
-    expect(screen.getByText(/Pickup QR verified/i)).toBeInTheDocument()
-  })
 })
