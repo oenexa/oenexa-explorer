@@ -3,6 +3,7 @@ import type { OENClient } from '../services/rpcClient'
 import type { ChainInfo } from '../types/rpc'
 
 import { LiveTerminal } from './LiveTerminal'
+import { SpinningCoin } from './SpinningCoin'
 
 export interface DashboardTabProps {
   client: OENClient
@@ -32,10 +33,13 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ client }) => {
 
   return (
     <section className="tab-pane">
-      <div className="tab-header">
-        <div>
-          <h2 className="tab-title">Live Network Dashboard</h2>
-          <p className="tab-subtitle">Real-time status of the quantum-resistant OENEXA consensus network</p>
+      <div className="tab-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <SpinningCoin />
+          <div>
+            <h2 className="tab-title">Live Network Dashboard</h2>
+            <p className="tab-subtitle">Real-time status of the quantum-resistant OENEXA consensus network</p>
+          </div>
         </div>
         <button
           onClick={fetchStatus}

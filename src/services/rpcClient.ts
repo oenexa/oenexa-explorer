@@ -158,6 +158,14 @@ export class OENClient {
   }> {
     return this.dispatch('oen_getTurnstileStatus', [])
   }
+
+  async getTransactionReceipt(hash: string): Promise<any> {
+    return this.dispatch('oen_getTransactionReceipt', [hash])
+  }
+
+  async getTransactionByHash(hash: string): Promise<any> {
+    return this.dispatch('oen_getTransactionByHash', [hash])
+  }
 }
 
 export const defaultClient = new OENClient()

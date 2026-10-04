@@ -49,11 +49,32 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
         const b = await client.getBlockByHeight(height)
         setBlock(b)
       } else {
-        const b = await client.getBlockByHash(trimmed)
-        setBlock(b)
+        try {
+          const b = await client.getBlockByHash(trimmed)
+          if (b) setBlock(b)
+        } catch (blockErr) {
+           // Try tx
+           try {
+             const tx = await client.getTransactionByHash(trimmed)
+             if (tx) {
+               // We fake a block object just to display the tx
+               setBlock({
+                 height: parseInt(tx.blockNumber, 16) || 0,
+                 hash: tx.blockHash || 'N/A',
+                 transactions: [tx],
+                 txCount: 1,
+                 gasUsed: parseInt(tx.gasUsed || '0', 16),
+               } as any)
+               return
+             }
+           } catch (txErr) {
+             throw new Error('Neither Block nor Transaction found with this hash')
+           }
+           throw new Error('Block or Transaction not found')
+        }
       }
     } catch (err: any) {
-      setError(err.message || 'Block not found')
+      setError(err.message || 'Not found')
     } finally {
       setLoading(false)
     }
