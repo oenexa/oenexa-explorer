@@ -2,7 +2,7 @@
 # OENEXA Frontend Dockerfile (Decoupled Web Dashboard)
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 1: Build React 18 + Vite application
-FROM node:20-alpine AS builder
+FROM node:lts-alpine AS builder
 
 WORKDIR /app
 
