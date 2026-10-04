@@ -440,7 +440,7 @@ tbody tr:hover {
    ========================================================================== */
 .dashboard-lower-split {
   display: grid;
-  grid-template-columns: 1fr 450px;
+  grid-template-columns: 1fr 350px;
   gap: 1.5rem;
   margin-top: 1.5rem;
   align-items: start;
