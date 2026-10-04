@@ -1,0 +1,13 @@
+# OENEXA Explorer Developer & AI Agent Rules
+# MANDATORY FOR ALL AI AGENTS & DEVELOPERS
+
+## Core Principles
+1. ZERO-BUG & BUILD PASSING MANDATE:
+   - Always run `npm run build` (`tsc && vite build`) before any commit.
+   - Zero TypeScript errors and zero build warnings allowed.
+   - Pushing unverified or failing code to `main` is strictly forbidden.
+
+2. SECURITY & RPC RESILIENCE:
+   - Never expose validator credentials or private keys in the client bundle.
+   - All RPC queries to `oenexa-node` (port 8545) must handle disconnections and fallback gracefully.
+   - See `DEVELOPER_AND_AI_RULES.md` for complete enforcement policies.
