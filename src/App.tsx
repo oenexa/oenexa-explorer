@@ -13,17 +13,28 @@ import './App.css'
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard')
 
-  // Detect node origin: check stored endpoint, check if served directly on port 8545, or fallback to node RPC on same host
+  // Detect node origin: check stored endpoint, check if served directly on port 8545, or fallback to /rpc reverse proxy
   const initialEndpoint = useMemo(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('oen_rpc_endpoint')
-      // If stored endpoint was set to web static asset port (8080 or 5173 without /rpc), discard it
-      if (saved && !saved.endsWith(':8080') && !saved.endsWith(':8080/') && !saved.endsWith(':5173') && !saved.endsWith(':5173/')) {
-        return saved
+      // If stored endpoint was mistakenly set to web static asset root without /rpc, discard it
+      if (saved) {
+        const s = saved.trim().toLowerCase()
+        const isStaticWeb = (s.includes(':8080') || s.includes(':5173') || s.includes(':3000')) && !s.includes('/rpc')
+        if (!isStaticWeb && (s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/'))) {
+          return saved.trim()
+        }
+        localStorage.removeItem('oen_rpc_endpoint')
       }
+
       if (window.location.port === '8545') {
         return window.location.origin
       }
+      // On containerized Nginx (port 8080) or Vite dev (port 5173), reverse proxy via /rpc
+      if (window.location.port === '8080' || window.location.port === '5173') {
+        return '/rpc'
+      }
+
       const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:'
       const hostname = window.location.hostname || 'localhost'
       return `${protocol}//${hostname}:8545`

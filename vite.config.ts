@@ -5,6 +5,16 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 5173,
+    proxy: {
+      '/rpc': {
+        target: 'http://localhost:8545',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/rpc/, ''),
+      },
+    },
+  },
   build: {
     outDir: process.env.OUT_DIR ? path.resolve(__dirname, process.env.OUT_DIR) : 'dist',
     emptyOutDir: true,
