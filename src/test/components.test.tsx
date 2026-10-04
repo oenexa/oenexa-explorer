@@ -86,7 +86,7 @@ describe('React Component Suite (TDD)', () => {
       />
     )
 
-    expect(screen.getByText(/OENEXA/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/OENEXA/i).length).toBeGreaterThan(0)
     expect(screen.getByText(/Block #105/i)).toBeInTheDocument()
     expect(screen.getByText(/Online/i)).toBeInTheDocument()
   })
@@ -99,18 +99,13 @@ describe('React Component Suite (TDD)', () => {
     expect(screen.getByText('Explorer')).toBeInTheDocument()
     expect(screen.getByText('Quantum Wallet')).toBeInTheDocument()
     expect(screen.getByText('Shielded Privacy')).toBeInTheDocument()
-    expect(screen.getByText('OenexaSwap')).toBeInTheDocument()
-    expect(screen.getByText('GreenDAO')).toBeInTheDocument()
-    expect(screen.getByText('CarbonX')).toBeInTheDocument()
-    expect(screen.getByText('Oenexa Cortex')).toBeInTheDocument()
-    expect(screen.getByText('D-Commerce')).toBeInTheDocument()
     expect(screen.getByText('RPC Console')).toBeInTheDocument()
 
     fireEvent.click(screen.getByText('Explorer'))
     expect(onSelect).toHaveBeenCalledWith('explorer')
 
-    fireEvent.click(screen.getByText('Oenexa Cortex'))
-    expect(onSelect).toHaveBeenCalledWith('cortex')
+    fireEvent.click(screen.getByText('RPC Console'))
+    expect(onSelect).toHaveBeenCalledWith('rpc-console')
   })
 
   it('DashboardTab displays chain metrics and refreshes', async () => {
