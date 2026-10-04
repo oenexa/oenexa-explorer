@@ -17,7 +17,10 @@ export const App: React.FC = () => {
   const initialEndpoint = useMemo(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('oen_rpc_endpoint')
-      if (saved) return saved
+      // If stored endpoint was set to web static asset port (8080 or 5173 without /rpc), discard it
+      if (saved && !saved.endsWith(':8080') && !saved.endsWith(':8080/') && !saved.endsWith(':5173') && !saved.endsWith(':5173/')) {
+        return saved
+      }
       if (window.location.port === '8545') {
         return window.location.origin
       }
