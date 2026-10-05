@@ -17,7 +17,7 @@
 }
 
 .terminal-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), serif;
   color: var(--accent-cyan);
   font-weight: 600;
   font-size: 0.9rem;
