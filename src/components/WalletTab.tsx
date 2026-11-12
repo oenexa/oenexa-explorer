@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 
 export interface WalletTabProps {
-  client: OENClient
+  client: ONXCClient
 }
 
 export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
@@ -67,9 +67,9 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
         setSecretKey('Protected in Validator Hardware Enclave / HSM')
         // Automatically check balance
         const balRaw = await client.getBalance(valAddr)
-        const nanoOen = BigInt(balRaw || '0')
-        const oenVal = Number(nanoOen) / 1e9
-        setBalance(`${oenVal.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} OEN`)
+        const nanoOnxc = BigInt(balRaw || '0')
+        const onxcVal = Number(nanoOnxc) / 1e9
+        setBalance(`${onxcVal.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ONXC`)
         const n = await client.getTransactionCount(valAddr)
         setNonce(n)
       } else {
@@ -85,7 +85,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
   const handleCheckBalance = async () => {
     const trimmed = address.trim()
     if (!trimmed) {
-      setError('Please enter or generate an OEN address')
+      setError('Please enter or generate an ONXC address')
       return
     }
 
@@ -94,15 +94,15 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
     try {
       const balRaw = await client.getBalance(trimmed)
       const valStr = String(balRaw || '0')
-      let oenVal: number
+      let onxcVal: number
       if (valStr.length > 17) {
         // 18 decimals EVM format
-        oenVal = Number(BigInt(valStr) / 100000000000000n) / 10000
+        onxcVal = Number(BigInt(valStr) / 100000000000000n) / 10000
       } else {
-        // 9 decimals native nano-OEN format
-        oenVal = Number(BigInt(valStr)) / 1e9
+        // 9 decimals native nano-ONXC format
+        onxcVal = Number(BigInt(valStr)) / 1e9
       }
-      setBalance(`${oenVal.toFixed(4)} OEN`)
+      setBalance(`${onxcVal.toFixed(4)} ONXC`)
 
       const n = await client.getTransactionCount(trimmed)
       setNonce(n)
@@ -160,7 +160,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
       <div className="card mt-4">
         <h3 className="card-title">Generated Post-Quantum Address</h3>
         <div className="form-group mb-3">
-          <label htmlFor="wallet-address-input">OEN Address (32-byte 0x... or 20-byte legacy)</label>
+          <label htmlFor="wallet-address-input">ONXC Address (32-byte 0x... or 20-byte legacy)</label>
           <div className="input-with-badge">
             <input
               id="wallet-address-input"
@@ -216,7 +216,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
       </div>
 
       <div className="card mt-4">
-        <h3 className="card-title">Send Quantum OEN Transaction</h3>
+        <h3 className="card-title">Send Quantum ONXC Transaction</h3>
         {error && (
           <div className="alert-box error mb-3" role="alert">
             <span>⚠️ {error}</span>
@@ -230,7 +230,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
 
         <form onSubmit={handleSendTx} className="form-grid">
           <div className="form-group">
-            <label htmlFor="tx-recipient">Recipient OEN Address</label>
+            <label htmlFor="tx-recipient">Recipient ONXC Address</label>
             <input
               id="tx-recipient"
               type="text"
@@ -242,7 +242,7 @@ export const WalletTab: React.FC<WalletTabProps> = ({ client }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="tx-amount">Amount (OEN)</label>
+            <label htmlFor="tx-amount">Amount (ONXC)</label>
             <input
               id="tx-amount"
               type="number"

@@ -1,6 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
 
 :root {
+  --ox-bg-canvas: #0b0e14;
+  --ox-bg-surface: #151922;
+  --ox-bg-elevated: #1f2533;
+  --ox-border-subtle: #232b3b;
+  --ox-text-primary: #f0f3f6;
+  --ox-text-secondary: #8c9ba8;
+  --ox-text-muted: #5a6878;
+  --ox-accent-primary: #f0b90b;
+  --ox-accent-positive: #10b981;
+  --ox-accent-danger: #ef4444;
+
   --font-sans: 'Rajdhani', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'Share Tech Mono', ui-monospace, SFMono-Regular, monospace;
   

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 import type { ChainInfo } from '../types/rpc'
 
 import { LiveTerminal } from './LiveTerminal'
 import { SpinningCoin } from './SpinningCoin'
 
 export interface DashboardTabProps {
-  client: OENClient
+  client: ONXCClient
 }
 
 export const DashboardTab: React.FC<DashboardTabProps> = ({ client }) => {
@@ -21,7 +21,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ client }) => {
       const info = await client.getChainInfo()
       setChainInfo(info)
     } catch (err: any) {
-      setError(err.message || 'Failed to connect to OEN Node')
+      setError(err.message || 'Failed to connect to ONXC Node')
     } finally {
       setLoading(false)
     }
@@ -105,7 +105,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ client }) => {
 
               <div className="metric-card">
                 <span className="metric-label">Base Fee (EIP-1559)</span>
-                <span className="metric-value">{baseFee} nanoOEN</span>
+                <span className="metric-value">{baseFee} nano-ONXC</span>
                 <span className="metric-foot">Dynamic Gas Elasticity</span>
               </div>
 

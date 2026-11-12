@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 
 export interface ShieldedTabProps {
-  client: OENClient
+  client: ONXCClient
 }
 
 export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
@@ -23,7 +23,7 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
     setLoading(true)
     try {
       const s = await client.getShieldedBalance()
-      setShieldedBal(s.shielded_balance_nano_oen || 0)
+      setShieldedBal(s.shielded_balance_nano_onxc || 0)
       setLeafCount(s.tree_leaf_count || 0)
       setTreeRoot(s.tree_root || '')
 
@@ -35,9 +35,9 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
       setLeafCount(12)
       setTreeRoot('0x7f8a9b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8')
       setTurnstileStatus({
-        transparent_supply_nano_oen: 95000000000,
-        shielded_supply_nano_oen: 5000000000,
-        total_supply_nano_oen: 100000000000,
+        transparent_supply_nano_onxc: 95000000000,
+        shielded_supply_nano_onxc: 5000000000,
+        total_supply_nano_onxc: 100000000000,
         invariant_preserved: true,
         status: 'SECURE',
       })
@@ -52,7 +52,7 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
 
   const handleShield = (e: React.FormEvent) => {
     e.preventDefault()
-    setMsg(`✓ Successfully created note commitment for ${shieldAmount} nano-OEN into the shielded pool.`)
+    setMsg(`✓ Successfully created note commitment for ${shieldAmount} nano-ONXC into the shielded pool.`)
   }
 
   const handleUnshield = (e: React.FormEvent) => {
@@ -61,11 +61,11 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
       setMsg('Error: Recipient transparent address is required.')
       return
     }
-    setMsg(`✓ Successfully unshielded ${unshieldAmount} nano-OEN to ${unshieldTo}. Nullifier registered.`)
+    setMsg(`✓ Successfully unshielded ${unshieldAmount} nano-ONXC to ${unshieldTo}. Nullifier registered.`)
   }
 
   const handleGenerateVK = () => {
-    setViewingKey('vk_oen_mlkem768_9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b')
+    setViewingKey('vk_onxc_mlkem768_9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b')
   }
 
   return (
@@ -80,8 +80,8 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
       <div className="metrics-grid">
         <div className="metric-card">
           <span className="card-label">Shielded Pool Balance</span>
-          <span className="card-value">{(shieldedBal / 1e9).toFixed(4)} OEN</span>
-          <span className="card-sub">{shieldedBal.toLocaleString()} nano-OEN</span>
+          <span className="card-value">{(shieldedBal / 1e9).toFixed(4)} ONXC</span>
+          <span className="card-sub">{shieldedBal.toLocaleString()} nano-ONXC</span>
         </div>
 
         <div className="metric-card">
@@ -116,11 +116,11 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
         <div className="card-form" style={{ padding: '1.25rem', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}>
           <h3>🔒 Shield Funds (t-addr ➔ z-addr)</h3>
           <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-            Deposit transparent OEN into a quantum-safe encrypted note commitment.
+            Deposit transparent ONXC into a quantum-safe encrypted note commitment.
           </p>
           <form onSubmit={handleShield}>
             <div style={{ margin: '0.75rem 0' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Amount (nano-OEN):</label>
+              <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Amount (nano-ONXC):</label>
               <input
                 type="number"
                 value={shieldAmount}
@@ -142,7 +142,7 @@ export const ShieldedTab: React.FC<ShieldedTabProps> = ({ client }) => {
           </p>
           <form onSubmit={handleUnshield}>
             <div style={{ margin: '0.75rem 0' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Amount (nano-OEN):</label>
+              <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Amount (nano-ONXC):</label>
               <input
                 type="number"
                 value={unshieldAmount}

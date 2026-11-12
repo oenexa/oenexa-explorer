@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 import type { BlockInfo } from '../types/rpc'
 
 export interface ExplorerTabProps {
-  client: OENClient
+  client: ONXCClient
 }
 
 export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
@@ -147,7 +147,7 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
             </div>
             <div className="detail-row">
               <span className="detail-key">Proposer (Validator)</span>
-              <code className="detail-val text-green break-all">{block.proposer || block.validator_addr || 'OEN Validator'}</code>
+              <code className="detail-val text-green break-all">{block.proposer || block.validator_addr || 'ONXC Validator'}</code>
             </div>
             <div className="detail-row">
               <span className="detail-key">Timestamp</span>
@@ -159,7 +159,7 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
             </div>
             <div className="detail-row">
               <span className="detail-key">Base Fee</span>
-              <span className="detail-val">{block.baseFee ?? block.base_fee ?? 10} nanoOEN</span>
+              <span className="detail-val">{block.baseFee ?? block.base_fee ?? 10} nano-ONXC</span>
             </div>
           </div>
 
@@ -173,7 +173,7 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
                     <th>Type</th>
                     <th>From</th>
                     <th>To</th>
-                    <th>Value (OEN)</th>
+                    <th>Value (ONXC)</th>
                     <th>Nonce</th>
                     <th>Gas Limit</th>
                   </tr>
@@ -237,7 +237,7 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({ client }) => {
                     <td><code className="addr-badge">{b.validator_addr ? b.validator_addr.slice(0, 12) + '...' : 'Validator'}</code></td>
                     <td><span className="badge secondary">{b.tx_count ?? b.txCount ?? 0} txs</span></td>
                     <td>{(b.gas_used ?? b.gasUsed ?? 0).toLocaleString()}</td>
-                    <td>{b.base_fee ?? b.baseFee ?? 10} nanoOEN</td>
+                    <td>{b.base_fee ?? b.baseFee ?? 10} nano-ONXC</td>
                     <td>
                       <button
                         onClick={() => {

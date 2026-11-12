@@ -18,7 +18,7 @@ export class RPCError extends Error {
   }
 }
 
-export class OENClient {
+export class ONXCClient {
   private endpoint: string
   private idCounter: number = 0
 
@@ -100,72 +100,71 @@ export class OENClient {
   }
 
   async getChainInfo(): Promise<ChainInfo> {
-    return this.dispatch<ChainInfo>('oen_chainInfo', [])
+    return this.dispatch<ChainInfo>('onxc_chainInfo', [])
   }
 
   async getBlockByHeight(height: number): Promise<BlockInfo> {
-    return this.dispatch<BlockInfo>('oen_blockByHeight', [height])
+    return this.dispatch<BlockInfo>('onxc_blockByHeight', [height])
   }
 
   async getBlockByHash(hash: string): Promise<BlockInfo> {
-    return this.dispatch<BlockInfo>('oen_blockByHash', [hash])
+    return this.dispatch<BlockInfo>('onxc_blockByHash', [hash])
   }
 
   async getRecentBlocks(count: number = 10): Promise<BlockInfo[]> {
-    return this.dispatch<BlockInfo[]>('oen_recentBlocks', [count])
+    return this.dispatch<BlockInfo[]>('onxc_recentBlocks', [count])
   }
 
   async getBalance(address: string): Promise<string> {
-    const res = await this.dispatch<any>('oen_getBalance', [address])
+    const res = await this.dispatch<any>('onxc_getBalance', [address])
     if (typeof res === 'object' && res !== null) {
-      if (res.balance_nano_oen !== undefined) return String(res.balance_nano_oen)
-      if (res.balance_oenexa !== undefined) return String(res.balance_oenexa)
+      if (res.balance_nano_onxc !== undefined) return String(res.balance_nano_onxc)
       if (res.balance !== undefined) return String(res.balance)
     }
     return String(res ?? '0')
   }
 
   async getTransactionCount(address: string): Promise<number> {
-    return this.dispatch<number>('oen_getTransactionCount', [address])
+    return this.dispatch<number>('onxc_getTransactionCount', [address])
   }
 
   async sendRawTransaction(rawHex: string): Promise<string> {
-    return this.dispatch<string>('oen_sendRawTransaction', [rawHex])
+    return this.dispatch<string>('onxc_sendRawTransaction', [rawHex])
   }
 
   async getFeeEstimate(): Promise<FeeEstimate> {
-    return this.dispatch<FeeEstimate>('oen_feeEstimate', [])
+    return this.dispatch<FeeEstimate>('onxc_feeEstimate', [])
   }
 
   async getGasPrice(): Promise<number> {
-    return this.dispatch<number>('oen_gasPrice', [])
+    return this.dispatch<number>('onxc_gasPrice', [])
   }
 
   async getShieldedBalance(): Promise<{
-    shielded_balance_nano_oen: number
+    shielded_balance_nano_onxc: number
     tree_leaf_count: number
     tree_root: string
   }> {
-    return this.dispatch('oen_getShieldedBalance', [])
+    return this.dispatch('onxc_getShieldedBalance', [])
   }
 
   async getTurnstileStatus(): Promise<{
-    transparent_supply_nano_oen: number
-    shielded_supply_nano_oen: number
-    total_supply_nano_oen: number
+    transparent_supply_nano_onxc: number
+    shielded_supply_nano_onxc: number
+    total_supply_nano_onxc: number
     invariant_preserved: boolean
     status: string
   }> {
-    return this.dispatch('oen_getTurnstileStatus', [])
+    return this.dispatch('onxc_getTurnstileStatus', [])
   }
 
   async getTransactionReceipt(hash: string): Promise<any> {
-    return this.dispatch('oen_getTransactionReceipt', [hash])
+    return this.dispatch('onxc_getTransactionReceipt', [hash])
   }
 
   async getTransactionByHash(hash: string): Promise<any> {
-    return this.dispatch('oen_getTransactionByHash', [hash])
+    return this.dispatch('onxc_getTransactionByHash', [hash])
   }
 }
 
-export const defaultClient = new OENClient()
+export const defaultClient = new ONXCClient()

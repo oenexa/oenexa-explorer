@@ -7,7 +7,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Decoupled web dashboard, block explorer, and quantum wallet application for the **OENEXA (OEN)** Layer-1 post-quantum blockchain ecosystem.
+Decoupled web dashboard, block explorer, and quantum wallet application for the **OENEXA (ONXC)** Layer-1 post-quantum blockchain ecosystem.
 
 ---
 
@@ -27,7 +27,7 @@ In accordance with Generation-6 blockchain design standards, the frontend is str
 - **Post-Quantum Wallet**: NIST ML-DSA-65 address inspection, balances, and transfer broadcasting.
 - **Shielded Privacy Pool**: Private note management, viewing key export, and turnstile supply audits.
 - **OenexaSwap DEX**: Native AMM constant-product liquidity pools with 0.3% LP incentives.
-- **GreenDAO Governance**: Quadratic voting, 10M OEN treasury allocations, and climate validator subsidies.
+- **GreenDAO Governance**: Quadratic voting, 10M ONXC treasury allocations, and climate validator subsidies.
 - **CarbonX ESG Credits**: Verified carbon offset registry with retirement proofs.
 - **Oenexa Cortex**: Green Data Center AI Grid, CaaS GPU compute leasing, and tokenized Tier-4 infrastructure bonds.
 - **D-Commerce**: Zero-commission physical delivery escrow & merchant POS with 2FA cryptographic QR verification.

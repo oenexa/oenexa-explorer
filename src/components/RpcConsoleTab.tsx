@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 
 export interface RpcConsoleTabProps {
-  client: OENClient
+  client: ONXCClient
 }
 
 interface MethodTemplate {
@@ -11,19 +11,19 @@ interface MethodTemplate {
 }
 
 const TEMPLATES: Record<string, MethodTemplate> = {
-  chainInfo: { method: 'oen_chainInfo', params: [] },
-  recentBlocks: { method: 'oen_recentBlocks', params: [5] },
-  feeEstimate: { method: 'oen_feeEstimate', params: [] },
-  gasPrice: { method: 'oen_gasPrice', params: [] },
-  blockByHeight: { method: 'oen_blockByHeight', params: [1] },
-  getBalance: { method: 'oen_getBalance', params: ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest'] },
-  shieldedBal: { method: 'oen_getShieldedBalance', params: [] },
-  turnstile: { method: 'oen_getTurnstileStatus', params: [] },
+  chainInfo: { method: 'onxc_chainInfo', params: [] },
+  recentBlocks: { method: 'onxc_recentBlocks', params: [5] },
+  feeEstimate: { method: 'onxc_feeEstimate', params: [] },
+  gasPrice: { method: 'onxc_gasPrice', params: [] },
+  blockByHeight: { method: 'onxc_blockByHeight', params: [1] },
+  getBalance: { method: 'onxc_getBalance', params: ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest'] },
+  shieldedBal: { method: 'onxc_getShieldedBalance', params: [] },
+  turnstile: { method: 'onxc_getTurnstileStatus', params: [] },
 }
 
 export const RpcConsoleTab: React.FC<RpcConsoleTabProps> = ({ client }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('chainInfo')
-  const [method, setMethod] = useState('oen_chainInfo')
+  const [method, setMethod] = useState('onxc_chainInfo')
   const [paramsJson, setParamsJson] = useState('[]')
   const [responseOutput, setResponseOutput] = useState<string | null>(null)
   const [executing, setExecuting] = useState(false)

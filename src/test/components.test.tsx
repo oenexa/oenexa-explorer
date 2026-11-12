@@ -11,11 +11,11 @@ import { WalletTab } from '../components/WalletTab'
 
 
 import { RpcConsoleTab } from '../components/RpcConsoleTab'
-import type { OENClient } from '../services/rpcClient'
+import type { ONXCClient } from '../services/rpcClient'
 import type { ChainInfo, BlockInfo, FeeEstimate } from '../types/rpc'
 
 // Mock client factory
-const createMockClient = (overrides = {}): OENClient => {
+const createMockClient = (overrides = {}): ONXCClient => {
   const mockInfo: ChainInfo = {
     chainId: 'oenexa-mainnet',
     height: 105,
@@ -33,14 +33,14 @@ const createMockClient = (overrides = {}): OENClient => {
     hash: '0000abcd12345678901234567890123456789012345678901234567890abcdef',
     parentHash: '0000000000000000000000000000000000000000000000000000000000000000',
     timestamp: 1725890000,
-    proposer: 'OEN1A2B3C4D5E6F7890123456789012345678901',
+    proposer: 'ONXC1A2B3C4D5E6F7890123456789012345678901',
     txCount: 1,
     transactions: [
       {
         hash: 'txhash123',
         type: 'transfer',
-        from: 'OEN1A2B3C4D5E6F7890123456789012345678901',
-        to: 'OEN9Z8Y7X6W5V4U3210987654321098765432109',
+        from: 'ONXC1A2B3C4D5E6F7890123456789012345678901',
+        to: 'ONXC9Z8Y7X6W5V4U3210987654321098765432109',
         value: '5000000000000000000',
         nonce: 1,
         gasLimit: 21000,
@@ -72,7 +72,7 @@ const createMockClient = (overrides = {}): OENClient => {
     dispatch: vi.fn().mockResolvedValue({ status: 'ok' }),
     dispatchBatch: vi.fn().mockResolvedValue([]),
     ...overrides,
-  } as unknown as OENClient
+  } as unknown as ONXCClient
 }
 
 describe('React Component Suite (TDD)', () => {
@@ -142,7 +142,7 @@ describe('React Component Suite (TDD)', () => {
       expect(screen.getByText(/Block #105 Details/i)).toBeInTheDocument()
     })
 
-    expect(screen.getByText(/OEN1A2B3C4D5E6F7890123456789012345678901/i)).toBeInTheDocument()
+    expect(screen.getByText(/ONXC1A2B3C4D5E6F7890123456789012345678901/i)).toBeInTheDocument()
     expect(screen.getByText(/txhash123/i)).toBeInTheDocument()
   })
 
@@ -159,7 +159,7 @@ describe('React Component Suite (TDD)', () => {
     fireEvent.click(checkBalBtn)
 
     await waitFor(() => {
-      expect(screen.getByText(/50.0000 OEN/i)).toBeInTheDocument()
+      expect(screen.getByText(/50.0000 ONXC/i)).toBeInTheDocument()
     })
   })
 

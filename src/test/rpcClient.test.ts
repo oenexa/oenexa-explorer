@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { OENClient, RPCError } from '../services/rpcClient'
+import { ONXCClient, RPCError } from '../services/rpcClient'
 import type { ChainInfo, BlockInfo, FeeEstimate } from '../types/rpc'
 
-describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
-  let client: OENClient
+describe('ONXCClient JSON-RPC 2.0 Client (TDD)', () => {
+  let client: ONXCClient
   const mockEndpoint = 'http://127.0.0.1:8545'
 
   beforeEach(() => {
-    client = new OENClient(mockEndpoint)
+    client = new ONXCClient(mockEndpoint)
     vi.restoreAllMocks()
   })
 
@@ -20,11 +20,11 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     client.setEndpoint('http://node.oenexa.org:8545')
     expect(client.getEndpoint()).toBe('http://node.oenexa.org:8545')
 
-    const defaultClient = new OENClient()
+    const defaultClient = new ONXCClient()
     expect(defaultClient.getEndpoint()).toBe('http://localhost:8545')
   })
 
-  it('calls oen_chainInfo and parses response', async () => {
+  it('calls onxc_chainInfo and parses response', async () => {
     const mockInfo: ChainInfo = {
       chainId: 'oenexa-mainnet',
       height: 105,
@@ -52,24 +52,24 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     expect(mockFetch).toHaveBeenCalledWith(mockEndpoint, expect.objectContaining({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: expect.stringContaining('"method":"oen_chainInfo"'),
+      body: expect.stringContaining('"method":"onxc_chainInfo"'),
     }))
   })
 
-  it('calls oen_blockByHeight and parses block details', async () => {
+  it('calls onxc_blockByHeight and parses block details', async () => {
     const mockBlock: BlockInfo = {
       height: 42,
       hash: '0000abcd12345678901234567890123456789012345678901234567890abcdef',
       parentHash: '0000000000000000000000000000000000000000000000000000000000000000',
       timestamp: 1725890000,
-      proposer: 'OEN1A2B3C4D5E6F7890123456789012345678901',
+      proposer: 'ONXC1A2B3C4D5E6F7890123456789012345678901',
       txCount: 1,
       transactions: [
         {
           hash: 'txhash1234567890abcdef',
           type: 'transfer',
-          from: 'OEN1A2B3C4D5E6F7890123456789012345678901',
-          to: 'OEN9Z8Y7X6W5V4U3210987654321098765432109',
+          from: 'ONXC1A2B3C4D5E6F7890123456789012345678901',
+          to: 'ONXC9Z8Y7X6W5V4U3210987654321098765432109',
           value: '1000000000000000000',
           nonce: 0,
           gasLimit: 21000,
@@ -93,11 +93,11 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     const block = await client.getBlockByHeight(42)
     expect(block).toEqual(mockBlock)
     expect(mockFetch).toHaveBeenCalledWith(mockEndpoint, expect.objectContaining({
-      body: expect.stringContaining('"method":"oen_blockByHeight"'),
+      body: expect.stringContaining('"method":"onxc_blockByHeight"'),
     }))
   })
 
-  it('calls oen_blockByHash correctly', async () => {
+  it('calls onxc_blockByHash correctly', async () => {
     const mockHash = '0000abcd12345678901234567890123456789012345678901234567890abcdef'
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -113,7 +113,7 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     expect(res.height).toBe(10)
   })
 
-  it('calls oen_getBalance and returns balance string', async () => {
+  it('calls onxc_getBalance and returns balance string', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -124,11 +124,11 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     })
     globalThis.fetch = mockFetch as any
 
-    const bal = await client.getBalance('OEN123')
+    const bal = await client.getBalance('ONXC123')
     expect(bal).toBe('50000000000000000000')
   })
 
-  it('calls oen_getTransactionCount and returns nonce', async () => {
+  it('calls onxc_getTransactionCount and returns nonce', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -139,11 +139,11 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     })
     globalThis.fetch = mockFetch as any
 
-    const nonce = await client.getTransactionCount('OEN123')
+    const nonce = await client.getTransactionCount('ONXC123')
     expect(nonce).toBe(7)
   })
 
-  it('calls oen_sendRawTransaction and returns tx hash', async () => {
+  it('calls onxc_sendRawTransaction and returns tx hash', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -158,7 +158,7 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     expect(txHash).toBe('0xhash999')
   })
 
-  it('calls oen_feeEstimate and parses FeeEstimate', async () => {
+  it('calls onxc_feeEstimate and parses FeeEstimate', async () => {
     const mockFee: FeeEstimate = {
       baseFee: 1000000,
       slow: 1000000,
@@ -180,7 +180,7 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     expect(estimate).toEqual(mockFee)
   })
 
-  it('calls oen_gasPrice and returns gas price number', async () => {
+  it('calls onxc_gasPrice and returns gas price number', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -231,8 +231,8 @@ describe('OENClient JSON-RPC 2.0 Client (TDD)', () => {
     globalThis.fetch = mockFetch as any
 
     const batch = await client.dispatchBatch([
-      { method: 'oen_chainInfo', params: [] },
-      { method: 'oen_getBalance', params: ['OEN123'] },
+      { method: 'onxc_chainInfo', params: [] },
+      { method: 'onxc_getBalance', params: ['ONXC123'] },
     ])
 
     expect(batch).toHaveLength(2)

@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="brand-section">
         <SpinningCoin />
         <div>
-          <h1 className="brand-title">OENEXA (OEN)</h1>
+          <h1 className="brand-title">OENEXA (ONXC)</h1>
           <span className="brand-badge">NIST ML-DSA-65 • Dual-Pool Mainnet</span>
         </div>
       </div>
