@@ -1,0 +1,98 @@
+name: OENEXA Explorer CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm run test
+
+      - name: Run Type Check & Production Build
+        run: npm run build
+
+  build-and-push:
+    needs: quality-gates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push OENEXA Explorer Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        if: env.SSH_KEY != ''
+        with:
+          host: ${{ secrets.SERVER_HOST || '62.210.92.60' }}
+          username: ${{ secrets.SERVER_USER || 'ubuntu' }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 10m
+          script: |
+            set -e
+            echo "Deploying OENEXA Explorer on VPS (62.210.92.60)..."
+            if [ -d "/opt/oenexa/src/oenexa-explorer" ]; then
+              cd /opt/oenexa/src/oenexa-explorer
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+            cd /opt/oenexa
+            docker compose build oenexa-explorer
+            docker compose up -d --no-deps oenexa-explorer
+            docker compose ps oenexa-explorer
+
+      - name: Report missing SSH secret
+        env:
+          SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        if: env.SSH_KEY == ''
+        run: echo "::warning::SERVER_SSH_KEY secret is not configured in this repository. Skipping automatic SSH deployment to VPS."
