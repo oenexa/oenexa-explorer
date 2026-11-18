@@ -19,6 +19,8 @@ const TEMPLATES: Record<string, MethodTemplate> = {
   getBalance: { method: 'onxc_getBalance', params: ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest'] },
   shieldedBal: { method: 'onxc_getShieldedBalance', params: [] },
   turnstile: { method: 'onxc_getTurnstileStatus', params: [] },
+  quantumSecurity: { method: 'onxc_getQuantumSecurityReport', params: [] },
+  consensusStatus: { method: 'onxc_getConsensusStatus', params: [] },
 }
 
 export const RpcConsoleTab: React.FC<RpcConsoleTabProps> = ({ client }) => {

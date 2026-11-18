@@ -170,6 +170,9 @@ describe('React Component Suite (TDD)', () => {
     })
     render(<RpcConsoleTab client={client} />)
 
+    expect(screen.getByText('onxc_getQuantumSecurityReport')).toBeInTheDocument()
+    expect(screen.getByText('onxc_getConsensusStatus')).toBeInTheDocument()
+
     const executeBtn = screen.getByRole('button', { name: /Execute RPC Call/i })
     fireEvent.click(executeBtn)
 
