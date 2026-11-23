@@ -6,6 +6,7 @@ export type TabKey =
   | 'wallet'
   | 'shielded'
   | 'rpc-console'
+  | 'reserves'
 
 export interface TabsProps {
   activeTab: TabKey
@@ -24,6 +25,7 @@ const TABS: TabDefinition[] = [
   { key: 'wallet', label: 'Quantum Wallet', icon: '🔑' },
   { key: 'shielded', label: 'Shielded Privacy', icon: '🛡️' },
   { key: 'rpc-console', label: 'RPC Console', icon: '⚡' },
+  { key: 'reserves', label: 'Proof of Reserves', icon: '🏛️' },
 ]
 
 export const Tabs: React.FC<TabsProps> = ({ activeTab, onSelectTab }) => {

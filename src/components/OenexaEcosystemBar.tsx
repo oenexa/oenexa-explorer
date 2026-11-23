@@ -8,7 +8,7 @@ const ECOSYSTEM_LINKS = [
   { id: 'wallet', label: 'Wallet', href: env.VITE_OENEXA_WALLET_URL || 'https://wallet.oenexa.com/wallet' },
   { id: 'chain', label: 'Blockchain', href: '/' },
   { id: 'ai', label: 'OENXA AI', href: env.VITE_OENEXA_AI_URL || 'https://ai.oenexa.com' },
-  { id: 'oengo', label: 'OENGO', href: env.VITE_OENEXA_OENGO_URL || 'https://oengo.oenexa.com' },
+  { id: 'pay', label: 'Pay', href: env.VITE_OENEXA_PAY_URL || 'https://pay.oenexa.com' },
   { id: 'security', label: 'Security Center', href: env.VITE_OENEXA_SECURITY_URL || 'https://app.oenexa.com/security' },
   { id: 'docs', label: 'Docs', href: env.VITE_OENEXA_DOCS_URL || 'https://docs.oenexa.com' },
 ]

@@ -7,6 +7,7 @@ import { ExplorerTab } from './components/ExplorerTab'
 import { WalletTab } from './components/WalletTab'
 import { ShieldedTab } from './components/ShieldedTab'
 import { RpcConsoleTab } from './components/RpcConsoleTab'
+import { ProofOfReservesTab } from './components/ProofOfReservesTab'
 import { MatrixBackground } from './components/MatrixBackground'
 import { ONXCClient } from './services/rpcClient'
 import './App.css'
@@ -105,6 +106,7 @@ export const App: React.FC = () => {
           {activeTab === 'wallet' && <WalletTab client={client} />}
           {activeTab === 'shielded' && <ShieldedTab client={client} />}
           {activeTab === 'rpc-console' && <RpcConsoleTab client={client} />}
+          {activeTab === 'reserves' && <ProofOfReservesTab />}
         </main>
       </div>
 
